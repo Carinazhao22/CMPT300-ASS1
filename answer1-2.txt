@@ -1,0 +1,118 @@
+Pointers in C
+-------------
+
+1) Consider the following C program.
+#include <string.h>
+int main(int argc, char *argv[])
+{
+  char *temp;
+  strcpy(temp, argv[0]);
+  return 0;
+}
+
+Why is the above code incorrect (i.e., likely to crash)?
+Temp points to garbage or somewhere but nobody knows the position so when the string is copied into temp it cannot be stored.
+
+2) Consider the following C program.
+#include <string.h>
+int main(int argc, char *argv[])
+{
+  char temp[9];
+  strcpy(temp, argv[0]);
+  return 0;
+}
+
+A buffer overflow occurs when the program name is 9 characters long
+(e.g., "12345.exe"). Why?
+Because there is one position needed to be reserved for NULL at the end of the temp, ten positions are needed to store 9 chars into temp but there are only nine positons. Thus, buffer overflow occurs.
+
+
+3) Consider the following C program.
+#include <string.h>
+int main(int argc, char *argv[])
+{
+  char *buffer = "Hello";
+  strcpy(buffer, "World");
+  return 0;
+}
+
+Why does this program crash?
+Because buffer is a constant and it is read-only, but in the strcpy, it tries to modify buffer.
+ 
+4) Consider the following C snippet.
+void myfunc()
+{
+  char b[100];
+  char *buffer = &b[0];
+  strcpy(buffer, "World");
+}
+
+Is this correct?  What's a simpler expression for &b[0]?
+it is correct. b is a simpler expression for &b[0].
+
+5) Consider the following C program.
+#include <stdio.h>
+int main(int argc, char* argv[])
+{
+  printf("%s %s %s\n", *argv, (*(argv+1)) + 2, *(argv+2));
+  return 0;
+}
+
+If this code is executed using the following line, what will be the output?
+> program1 -n5 abc
+program1 5 abc
+
+6) Consider the following C program.
+#include <stdio.h>
+#include <string.h>
+char *myfunc(char **argv)
+{
+  char buffer[100];
+  strcpy(buffer, "hello");
+  return buffer;
+}
+int main(int argc, char *argv[])
+{
+  char *s = myfunc(argv);
+  printf("%s\n", s);
+}
+
+What's wrong with this?
+The address of buffer will not exist when the myfun returns, so in the main function, s will point to nothing.
+
+
+
+
+Part Two: Fixing the Bugs
+-------------------------
+
+Understanding the code
+
+  1) Explain why this program uses the exclamation operator with the
+     strcmp() function.
+     
+Ans: When two strings are identical, the function will return 0, so in order to execute the statement below the condition, ! should be used to turn 0 to 1. 
+
+  2) Explain why the 'LENGTH' macro returns the length of an array.
+     Would it work with a pointer to a dynamically allocated array? (Hint:
+     understand sizeof).
+
+Ans: sizeof(arr) returns the total memory used for the whole array and sizeof(*arr) returns the memory used for the first element so it will return the number of elements in the array when sizeof(arr)/sizeof(*arr).
+No.sizeof() doesn't work to a dynamic array since it dosen't return the whole number of memory in the numerator but return the size of the pointer. 
+
+Bug hunting
+
+  3) Explain and fix the logical flow bug within the switch statement.
+     (What happens when the -h option is used?)
+
+Ans: We should add "break" statement after the case"h" is executed.Without break, when -h   option is used, the default will also be executed after the case"h" is executed.
+
+  4) Explain and fix the argument parsing error. (Why is entrycount never
+     zero?)
+Ans: Because when we type ./main to execute the program, "main" will also be considered as a word that stored in entries, which causes entrycount will never be zero. In order to fix that, we should add "argv++" before while statement.
+    
+
+  5) Fix print_result() to print results correctly and in the same order as the words were specified on the command line.  Explain your solution.
+
+Ans: In the function, in order to print the next word in entries arry, we should add entries++ after printing the result of the previous word, but this statement isn't in the original function so only the first word in the array is printed.
+

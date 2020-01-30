@@ -1,0 +1,30 @@
+Part Two: Fixing the Bugs
+-------------------------
+
+Understanding the code
+
+  1) Explain why this program uses the exclamation operator with the
+     strcmp() function.
+     ans: when two strings are identical, the function will return 0, so in order to execute the statement below the condition, ! should be used to turn 0 to 1. 
+
+  2) Explain why the 'LENGTH' macro returns the length of an array.
+     Would it work with a pointer to a dynamically allocated array? (Hint:
+     understand sizeof).
+
+sizeof(arr) returns the total memory used for the whole array and sizeof(*arr) returns the memory used for the first element so it will return the number of elements in the array when sizeof(arr)/sizeof(*arr).
+No.sizeof() doesn't work to a dynamic array since it dosen't return the whole number of memory in the numerator but return the size of the pointer. 
+
+Bug hunting
+
+  3) Explain and fix the logical flow bug within the switch statement.
+     (What happens when the -h option is used?)
+      we should add "break" statement after the case"h" is executed.Without break, when -h   option is used, the default will also be executed after the case"h" is executed.
+
+  4) Explain and fix the argument parsing error. (Why is entrycount never
+     zero?)
+     because when we type ./main to execute the program, "main" will also be considered as a word that stored in entries, which causes entrycount will never be zero. In order to fix that, we should add "argv++" before while statement.
+    
+
+  5) Fix print_result() to print results correctly and in the same order
+     as the words were specified on the command line.  Explain your solution.
+   In the function, in order to print the next word in entries arry, we should add entries++ after printing the result of the previous word, but this statement isn't in the original function so only the first word in the array is printed.
